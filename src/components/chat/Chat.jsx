@@ -64,6 +64,7 @@ const Chat = () => {
                 </div>
                 <div className="message own">
                     <div className="texts">
+                        <img src="https://images.pexels.com/photos/18788673/pexels-photo-18788673/free-photo-of-roof-on-a-yellow-building.jpeg" alt="" />
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium excepturi animi odio dolorum error debitis dignissimos voluptatibus eius fugit molestias facilis obcaecati, officiis expedita aperiam inventore assumenda iusto temporibus in.</p>
                         <span>1 min ago</span>
                     </div>
