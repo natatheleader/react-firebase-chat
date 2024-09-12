@@ -7,3 +7,5 @@ const Detail = () => {
 }
 
 export default Detail
+
+//worked till 51:12
