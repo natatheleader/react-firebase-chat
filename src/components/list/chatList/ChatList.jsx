@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "./chatList.css"
+import AddUser from "./addUser/AddUser"
 
 const UserInfo = () => {
 
@@ -37,6 +38,8 @@ const UserInfo = () => {
                     <p>Hello</p>
                 </div>
             </div>
+
+            {addMode && <AddUser />}
         </div>
     )
 }
