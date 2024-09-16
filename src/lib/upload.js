@@ -3,7 +3,7 @@ import { storage } from "./firebase";
 
 const upload = async (file) => {
 
-    const date = new date();    
+    const date = new Date();    
 
     const storageRef = ref(storage, `images/${date + "_" + file.name}`);
     
