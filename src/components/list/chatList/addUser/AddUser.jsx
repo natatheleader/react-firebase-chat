@@ -1,29 +1,66 @@
 import { useState } from "react";
 import "./addUser.css";
 import { db } from "../../../../lib/firebase";
-import { collection, query, where } from "firebase/firestore";
-import { getDocs } from "firebase/firestore";
+import { useUserStore } from "../../../../lib/userStore";
+import { arrayUnion, collection, query, serverTimestamp, where } from "firebase/firestore";
+import { getDocs, setDoc, doc, updateDoc } from "firebase/firestore";
 
 
 const AddUser = () => {
 
     const [user, setUser] = useState(null);
 
-    const handleSearch = async e => {
+    const { currentUser } = useUserStore();
+
+    const handleSearch = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const username = formData.get("username");
 
         try {
-            const userRef = collection (db, "users");
+            const userRef = collection(db, "users");
             const q = query (userRef, where("username", "==", username));
 
             const querySnapShot = await getDocs(q);
 
             if (!querySnapShot.empty) {
-                setUser(querySnapShot.doc[0].data());
+                setUser(querySnapShot.docs[0].data());
             } 
         }catch (err) {
+            console.log(err);
+        }
+    }
+
+    const handleAdd = async () => {
+        const chatRef = collection(db, "chats");
+        const userChatsRef = collection(db, "userChats");
+
+        try {
+            const newChatRef = doc(chatRef);
+
+            await setDoc(newChatRef, {
+                createdAt: serverTimestamp(),
+                messages: [],
+            });
+
+            await updateDoc(doc(userChatsRef, user.id), {
+                chats: arrayUnion({
+                    chatId: newChatRef.id,
+                    lastMessage: "",
+                    recieverId: currentUser.id,
+                    updatedAt: Date.now(),
+                }),
+            });
+
+            await updateDoc(doc(userChatsRef, currentUser.id), {
+                chats: arrayUnion({
+                    chatId: newChatRef.id,
+                    lastMessage: "",
+                    recieverId: user.id,
+                    updatedAt: Date.now(),
+                }),
+            });
+        } catch (err) {
             console.log(err);
         }
     }
@@ -41,7 +78,7 @@ const AddUser = () => {
                         <img src={user.avatar || "./avatar.png"} alt="" />
                         <span>{user.username}</span>
                     </div>
-                    <button>Add User</button>
+                    <button onClick={handleAdd}>Add User</button>
                 </div>                
             }
         </div>

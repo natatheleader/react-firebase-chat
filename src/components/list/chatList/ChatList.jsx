@@ -2,23 +2,24 @@ import { useState, useEffect } from "react";
 import "./chatList.css";
 import AddUser from "./addUser/AddUser";
 import { useUserStore } from "../../../lib/userStore";
-import { doc, onSnapshot} from "firebase/firestore";
+import { useChatStore } from "../../../lib/chatStore";
+import { doc, getDoc, onSnapshot, updateDoc} from "firebase/firestore";
 import { db } from "../../../lib/firebase";
-import { getDoc } from "firebase/firestore";
 
-const UserInfo = () => {
+const ChatList = () => {
 
     const [addMode, setAddMode] = useState(false)
     const [chats, setChats] = useState([]);
 
-    const {currentUser} = useUserStore();
+    const { currentUser } = useUserStore();
+    const { chatId, changeChat } = useChatStore();
 
     useEffect(() => {
         const unSub = onSnapshot(doc(db, "userChats", currentUser.id), async (res) => {
             const items = res.data().chats;
 
-            const promises = items.map( async(item) => {
-                const userDocRef = doc(db, "users", item.receiverId);
+            const promises = items.map(async (item) => {
+                const userDocRef = doc(db, "users", item.recieverId);
                 const userDocSnap = await getDoc(userDocRef);
 
                 const user = userDocSnap.data()
@@ -34,7 +35,11 @@ const UserInfo = () => {
         return () => {
             unSub();
         }
-    }, [currentUser.id])
+    }, [currentUser.id]);
+
+    const handleSelect = async (chat) => {
+        changeChat(chat.chatId, chat.user);
+    }
 
     return (
         <div className="chatList">
@@ -46,34 +51,18 @@ const UserInfo = () => {
                 <img src={addMode ? "./minus.png" : "./plus.png"} alt="" className="add" onClick={() => setAddMode((prev) => !prev)} />
             </div>
             {chats.map((chat) => (
-                <div className="item" key={chat.chatId}>
-                    <img src="./avatar.png" alt="" />
+                <div className="item" key={chat.chatId} onClick={() => handleSelect(chat)}>
+                    <img src={chat.user.avatar || "./avatar.png"} alt="" />
                     <div className="texts">
-                        <span>Jane Doe</span>
+                        <span>{chat.user.username}</span>
                         <p>{chat.lastMessage}</p>
                     </div>
                 </div>
             ))};
 
-            <div className="item">
-                <img src="./avatar.png" alt="" />
-                <div className="texts">
-                    <span>Jane Doe</span>
-                    <p>Hello</p>
-                </div>
-            </div>
-
-            <div className="item">
-                <img src="./avatar.png" alt="" />
-                <div className="texts">
-                    <span>Jane Doe</span>
-                    <p>Hello</p>
-                </div>
-            </div>
-
             {addMode && <AddUser />}
         </div>
-    )
-}
+    );
+};
 
-export default UserInfo
+export default ChatList
