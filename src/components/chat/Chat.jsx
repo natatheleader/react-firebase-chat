@@ -6,6 +6,7 @@ import { db } from '../../lib/firebase';
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
 import upload from '../../lib/upload';
+import { format } from "timeago.js";
 
 const Chat = () => {
     const [chat, setChat] = useState();
@@ -23,7 +24,7 @@ const Chat = () => {
 
     useEffect(() => {
         endRef.current?.scrollIntoView({ behavior: "smooth"})
-    }, []);
+    }, [chat.messages]);
 
     useEffect(() => {
         const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
@@ -78,7 +79,7 @@ const Chat = () => {
                 if(userChatsSnapshot.exists()) {
                     const userChatsData = userChatsSnapshot.data();
 
-                    const chatIndex = userChatsData.chats.findIndex(c => c.chatId === chatId);
+                    const chatIndex = userChatsData.chats.findIndex((c) => c.chatId === chatId);
 
                     userChatsData.chats[chatIndex].lastMessage = text;
                     userChatsData.chats[chatIndex].isSeen = id === currentUser.id ? true : false;
@@ -91,15 +92,15 @@ const Chat = () => {
             });
         } catch (err) {
             console.log(err);
+        } finally {
+            setImg({
+                file: null,
+                url: "",
+            });
+
+            setText("");
         }
-
-        setImg({
-            file: null,
-            url: "",
-        });
-
-        setText("");
-    }
+    };
 
     return (
         <div className="chat">
@@ -120,11 +121,11 @@ const Chat = () => {
 
             <div className='center'>
                 {chat?.messages?.map((message) => (
-                    <div className={message.senderId == currentUser?.id ? "message own" : "message"} key={message?.createAt}>
+                    <div className={message.senderId === currentUser?.id ? "message own" : "message"} key={message?.createAt}>
                         <div className="texts">
                             {message.img && <img src={message.img} alt="" />}
                             <p>{message.text}</p>
-                            {/* <span>{message}</span> */}
+                            <span>{format(message.createdAt.toDate())}</span>
                         </div>
                     </div>
                 ))}
@@ -132,7 +133,6 @@ const Chat = () => {
                     <div className="message own">
                         <div className="texts">
                             <img src={img.url} alt="" />
-                            <p>Image uploaded successfully!</p>
                         </div>
                     </div>
                 )}
@@ -144,11 +144,11 @@ const Chat = () => {
                     <label htmlFor="file">
                         <img src="./img.png" alt="" />
                     </label>
-                    <input type="file" id="file" style={{ display: "none" }} onChange={handleImg()}/>
+                    <input type="file" id="file" style={{ display: "none" }} onChange={handleImg}/>
                     <img src="./camera.png" alt="" />
                     <img src="./mic.png" alt="" />
                 </div>
-                <input type="text" placeholder={(isCurrentUserBlocked || isReceiverBlocked) ? "You Cannot Send a Message" : "Type Your Message ..."} value={text} onChange={e => setText(e.target.value)} disabled={isCurrentUserBlocked || isReceiverBlocked}/>
+                <input type="text" placeholder={isCurrentUserBlocked || isReceiverBlocked ? "You Cannot Send a Message" : "Type Your Message ..."} value={text} onChange={(e) => setText(e.target.value)} disabled={isCurrentUserBlocked || isReceiverBlocked}/>
                 <div className="emoji">
                     <img src="./emoji.png" alt="" onClick={() => setIsEmojiOpen((prev) => !prev)}/>
                     <div className="picker">

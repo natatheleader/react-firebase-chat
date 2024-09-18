@@ -20,7 +20,7 @@ const ChatList = () => {
             const items = res.data().chats;
 
             const promises = items.map(async (item) => {
-                const userDocRef = doc(db, "users", item.recieverId);
+                const userDocRef = doc(db, "users", item.receiverId);
                 const userDocSnap = await getDoc(userDocRef);
 
                 const user = userDocSnap.data()
@@ -45,7 +45,7 @@ const ChatList = () => {
             return rest;
         });
 
-        const chatIndex = userChats.findIndex(item => item.chatId === chat.chatID)
+        const chatIndex = userChats.findIndex((item) => item.chatId === chat.chatID);
 
         userChats[chatIndex].isSeen = true;
 
@@ -61,7 +61,7 @@ const ChatList = () => {
         }
     }
 
-    const filteredChats = chats.filter(c => c.user.username.toLowerCase().includes(input.toLowerCase()));
+    const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(input.toLowerCase()));
 
     return (
         <div className="chatList">
