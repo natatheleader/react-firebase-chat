@@ -2,8 +2,7 @@ import { useState } from "react";
 import "./addUser.css";
 import { db } from "../../../../lib/firebase";
 import { useUserStore } from "../../../../lib/userStore";
-import { arrayUnion, collection, query, serverTimestamp, where } from "firebase/firestore";
-import { getDocs, setDoc, doc, updateDoc } from "firebase/firestore";
+import { arrayUnion, collection, query, serverTimestamp, where, getDoc, getDocs, setDoc, doc, updateDoc } from "firebase/firestore";
 
 
 const AddUser = () => {
@@ -29,7 +28,7 @@ const AddUser = () => {
         }catch (err) {
             console.log(err);
         }
-    }
+    };
 
     const handleAdd = async () => {
         const chatRef = collection(db, "chats");
@@ -72,7 +71,7 @@ const AddUser = () => {
                 <button>Search</button>
             </form>
 
-            {user && 
+            {user &&  (
                 <div className="user">
                     <div className="detail">
                         <img src={user.avatar || "./avatar.png"} alt="" />
@@ -80,9 +79,9 @@ const AddUser = () => {
                     </div>
                     <button onClick={handleAdd}>Add User</button>
                 </div>                
-            }
+            )}
         </div>
     );
-}
+};
 
 export default AddUser;

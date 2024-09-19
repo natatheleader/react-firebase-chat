@@ -1,6 +1,5 @@
 .detail {
     flex: 1;
-    overflow: scroll;
 
     .user {
         padding: 30px 20px;
@@ -70,21 +69,21 @@
                             font-weight: 300;
                         }
                     }
-                }
 
-                .icon {
-                    width: 30px;
-                    height: 30px;
-                    background-color: rgba(17, 25, 40, 0.3);
-                    padding: 10px;
-                    border-radius: 50%;
-                    cursor: pointer;
+                    .icon {
+                        width: 30px;
+                        height: 30px;
+                        background-color: rgba(17, 25, 40, 0.3);
+                        padding: 10px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                    }
                 }
             }
-
         }
+
         button {
-            padding: 15px 20px;
+            padding: 15px;
             background-color: rgba(230, 74, 105, 0.553);
             color: white;
             border: none;
@@ -92,7 +91,7 @@
             cursor: pointer;
 
             &:hover {
-                background-color: rgba(230, 74, 105, 0.796);
+                background-color: rgba(220, 20, 60, 0.796);
             }
 
             &.logout {
