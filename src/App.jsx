@@ -21,7 +21,7 @@ const App = () => {
 
     return () => {
       unSub(); // clean up function to unsubscribe on unmount
-    }
+    };
   }, [fetchUserInfo]);
 
   if (isLoading) return <div className='loading'>Loading...</div>;
@@ -43,7 +43,7 @@ const App = () => {
       <Notification />
       
     </div>
-  )
-}
+  );
+};
 
 export default App
