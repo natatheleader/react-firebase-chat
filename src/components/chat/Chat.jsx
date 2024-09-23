@@ -9,7 +9,7 @@ import upload from '../../lib/upload';
 import { format } from "timeago.js";
 
 const Chat = () => {
-    const [chat, setChat] = useState();
+    const [chat, setChat] = useState({ messages: [] });
     const [isEmojiOpen, setIsEmojiOpen] = useState(false);
     const [text, setText] = useState("");
     const [img, setImg] = useState({
@@ -28,7 +28,12 @@ const Chat = () => {
 
     useEffect(() => {
         const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
-            setChat(res.data());
+            if (res.exists()) {
+                setChat(res.data());
+            } else {
+                console.error("Chat document does not exist");
+                setChat({ messages: [] }); // Reset to empty if the document doesn't exist
+            }
         });
 
         return () => {
@@ -155,7 +160,7 @@ const Chat = () => {
                         <EmojiPicker open={isEmojiOpen} onEmojiClick={handleEmoji} />
                     </div>
                 </div>
-                <button className='sendButton' onClick={handleSend()} disabled={isCurrentUserBlocked || isReceiverBlocked}>Send</button>
+                <button className='sendButton' onClick={handleSend} disabled={isCurrentUserBlocked || isReceiverBlocked}>Send</button>
             </div>
         </div>
     )
